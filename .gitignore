@@ -6,7 +6,7 @@
 /Intermediate
 /DerivedDataCache
 /Binaries
-
+/Content/StarterContent
 Plugins/*/Binaries/*
 
 *.sln
