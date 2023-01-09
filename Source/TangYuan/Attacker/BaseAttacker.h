@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Pawn.h"
@@ -43,17 +44,31 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="BasicAttributes")
 	float Cooling_Current = 0.0f;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="BasicAttributes")
-	float Cooling_InRate = 0.01f;
+	float Cooling_InRate = 0.001f;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="BasicAttributes")
+	float Cooling_Alpha = 0.001f;
 	//攻击函数
 	UFUNCTION(BlueprintCallable)
 	void Attack();
 	//重置攻击
 	UFUNCTION(BlueprintCallable)
 	void ResetAttack();
+	//重置攻击相关定时器
+	void ResetAttackTimeHandler();
+	//更新当前攻击状态
 	void AttackUpdate();
-	//冷却定时器
+	//攻击冷却定时器
 	FTimerHandle TimerHandle_AttackCooling;
-
+	//重置攻击定时器
+	FTimerHandle TimerHandle_ReSetAttackCool;
+	
+	//变化定时器(基础旋转)
+	FTimerHandle TimerHandle_Change;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="ChangeAttributes")
+	float ChangeSize = 1.0f;
+	UFUNCTION(BlueprintCallable)
+	void Change();
+	
 	//component
 public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
@@ -64,4 +79,7 @@ public:
 	UBoxComponent* CollsionBoxComp;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	UWidgetComponent* WidgetComp_Cooling;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
+	UArrowComponent* ArrowComponent;
 };

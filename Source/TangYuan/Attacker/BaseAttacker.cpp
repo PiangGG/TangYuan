@@ -20,13 +20,17 @@ ABaseAttacker::ABaseAttacker()
 
 	WidgetComp_Cooling = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComp_Cooling"));
 	WidgetComp_Cooling->SetupAttachment(CollsionBoxComp);
+
+	ArrowComponent =  CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComp"));
+	ArrowComponent->SetupAttachment(CollsionBoxComp);
+
 }
 
 // Called when the game starts or when spawned
 void ABaseAttacker::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetWorldTimerManager().SetTimer(TimerHandle_Change,this,&ABaseAttacker::Change,Cooling_InRate,true);
 	ResetAttack();
 }
 
@@ -75,17 +79,32 @@ void ABaseAttacker::ResetAttack()
 {
 	bCanAttack = false;
 	Cooling_Current = 0.0f;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackCooling,this,&ABaseAttacker::AttackUpdate,0.001,true);
+	//每帧执行攻击冷却定时器
+	GetWorldTimerManager().SetTimer(TimerHandle_AttackCooling,this,&ABaseAttacker::AttackUpdate,Cooling_InRate,true);
+	//冷却最大时间后执行
+	GetWorldTimerManager().SetTimer(TimerHandle_ReSetAttackCool,this,&ABaseAttacker::ResetAttackTimeHandler,Cooling_Max,false);
+}
+
+void ABaseAttacker::ResetAttackTimeHandler()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle_AttackCooling);
+	GetWorldTimerManager().ClearTimer(TimerHandle_ReSetAttackCool);
 }
 
 void ABaseAttacker::AttackUpdate()
 {
-	//Cooling_Current
-	Cooling_Current = FMath::FInterpTo(Cooling_Current,Cooling_Max,GetWorld()->GetTimeSeconds(),Cooling_InRate);
-	if (FMath::IsNearlyEqual(Cooling_Current,Cooling_Max,Cooling_InRate))
+	
+	Cooling_Current = FMath::Clamp(Cooling_Max-GetWorldTimerManager().GetTimerRemaining(TimerHandle_ReSetAttackCool),0.0f,Cooling_Max);
+	Cooling_Alpha = Cooling_Current/Cooling_Max;
+	if (FMath::IsNearlyEqual(Cooling_Alpha,1.0f,Cooling_InRate))
 	{
 		bCanAttack = true;
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_AttackCooling);
 	}
+}
+
+void ABaseAttacker::Change()
+{
+	FRotator TagetRotater(0.0,ChangeSize,0.0);
+	AddActorLocalRotation(TagetRotater);
 }
 
