@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/ALSBaseCharacter.h"
+#include "PhysicsControl/Public/PhysicsControlComponent.h"
 #include "ALSCharacter.generated.h"
 
 /**
@@ -63,4 +64,49 @@ public:
 
 private:
 	bool bNeedsColorReset = false;
+public:
+	//PhysicsControlComponent
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|Component")
+	UPhysicsControlComponent* PhysicsControlComponent;
+	//Var
+	//SK Controls
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|SK Controls")
+	float SKLinearStrength = 3.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|SK Controls")
+	float SKAngularStrength = 3.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|SK Controls")
+	TMap<FName,FPhysicsControlNameArray>SKLimbControls;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|SK Controls")
+	FPhysicsControlNameArray SKAllControls;
+	//AA Controls
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|AA Controls")
+	TMap<FName,FPhysicsControlNameArray>AALimbControls;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|AA Controls")
+	float AAStrength = 10.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|AA Controls")
+	FPhysicsControlNameArray AAAllControls;
+	//Body Modifiers
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|Body Modifiers")
+	FPhysicsControlNameArray AllBodyModifiers;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie|Body Modifiers")
+	TMap<FName,FPhysicsControlNameArray> LimbBodyModifiers;
+	//配置
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite,Category="Zombie|配置")
+	TArray<FPhysicsControlLimbSetupData>LimbSetupData;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category="Zombie")
+	bool NeedToMakeControls = true;
+	//void InitPhysicsControlComponent();
+	UFUNCTION(BlueprintCallable)
+	void MakeControls();
+	UFUNCTION(BlueprintCallable)
+	void GetNoiseVector(float Amplitude,float Frequency,FVector &ReturnValue,float &Magnitude);
+	UFUNCTION(BlueprintCallable)
+	void GetPerlinNoiseVector(float Amplitude,float Frequency,float TimeOffset,FVector &ReturnValue);
+	UFUNCTION(BlueprintCallable)
+	void EnsureControls();
+	
+	UFUNCTION(BlueprintCallable)
+	void FollowAnimation();
+	UFUNCTION(BlueprintCallable)
+	void Ragdoll();
 };

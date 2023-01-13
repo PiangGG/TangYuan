@@ -36,16 +36,16 @@ protected:
 	virtual void NotifyActorOnInputTouchEnd(const ETouchIndex::Type FingerIndex);
 public:
 	//是否可以攻击
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="BasicAttributes")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
 	bool bCanAttack = false;
 	//攻击之后的冷却
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="BasicAttributes")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
 	float Cooling_Max = 2.0f;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="BasicAttributes")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
 	float Cooling_Current = 0.0f;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="BasicAttributes")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
 	float Cooling_InRate = 0.001f;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="BasicAttributes")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
 	float Cooling_Alpha = 0.001f;
 	//攻击函数
 	UFUNCTION(BlueprintCallable)
@@ -64,8 +64,10 @@ public:
 	
 	//变化定时器(基础旋转)
 	FTimerHandle TimerHandle_Change;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="ChangeAttributes")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Change")
 	float ChangeSize = 1.0f;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Change")
+	float bCanChange = true;
 	UFUNCTION(BlueprintCallable)
 	void Change();
 	

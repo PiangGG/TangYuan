@@ -29,6 +29,10 @@
 		{
 			"Name": "GameSubtitles",
 			"Enabled": true
+		},
+		{
+			"Name": "PhysicsControl",
+			"Enabled": true
 		}
 	]
 }
