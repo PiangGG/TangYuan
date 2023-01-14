@@ -23,4 +23,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//Component
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component|移动组件")
+	class UProjectileMovementComponent* MovementComponent;
+	
 };
