@@ -17,6 +17,11 @@ class TANGYUAN_API UTYMapGameInstanceSubsystem : public UGameInstanceSubsystem
 	UTYMapGameInstanceSubsystem();
 
 public:
+
+	//
+	UFUNCTION(BlueprintCallable)
+	void InitMap();
+	//设置地图 单元显示
 	UFUNCTION(BlueprintCallable)
 	void SetUnitVisble(bool bVisble);
 };

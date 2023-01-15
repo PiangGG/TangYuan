@@ -10,6 +10,51 @@ UTYMapGameInstanceSubsystem::UTYMapGameInstanceSubsystem()
 	
 }
 
+void UTYMapGameInstanceSubsystem::InitMap()
+{
+	for (int i = 0;i<16;i++)
+	{
+		for (int j = 0;j<16;j++)
+		{
+			FVector Location;
+			Location.X = j*100;
+			Location.Y = i*100; 
+			GetWorld()->SpawnActor<AMapUnit>(Location,FRotator(0));
+			
+		}
+	}
+	for (int i = 0;i<16;i++)
+	{
+		for (int j = 0;j<16;j++)
+		{
+			FVector Location;
+			Location.X = j*100;
+			Location.Y = i*-100; 
+			GetWorld()->SpawnActor<AMapUnit>(Location,FRotator(0));
+		}
+	}
+	for (int i = 0;i<16;i++)
+	{
+		for (int j = 0;j<16;j++)
+		{
+			FVector Location;
+			Location.X = j*-100;
+			Location.Y = i*-100; 
+			GetWorld()->SpawnActor<AMapUnit>(Location,FRotator(0));
+		}
+	}
+	for (int i = 0;i<16;i++)
+	{
+		for (int j = 0;j<16;j++)
+		{
+			FVector Location;
+			Location.X = j*-100;
+			Location.Y = i*100; 
+			GetWorld()->SpawnActor<AMapUnit>(Location,FRotator(0));
+		}
+	}
+}
+
 void UTYMapGameInstanceSubsystem::SetUnitVisble(bool bVisble)
 {
 	/*if (bVisble)
