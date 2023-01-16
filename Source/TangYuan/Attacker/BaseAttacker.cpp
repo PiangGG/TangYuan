@@ -14,11 +14,11 @@ ABaseAttacker::ABaseAttacker()
 
 	ST_MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ST_MeshComp"));
 	ST_MeshComp->SetupAttachment(CollsionBoxComp);
-	ST_MeshComp->OnClicked.AddDynamic(this,&thisclass::OnClicked);
+	//ST_MeshComp->OnClicked.AddDynamic(this,&thisclass::OnClicked);
 
 	SK_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SK_MeshComp"));
 	SK_MeshComp->SetupAttachment(CollsionBoxComp);
-	SK_MeshComp->OnClicked.AddDynamic(this,&thisclass::OnClicked);
+	//SK_MeshComp->OnClicked.AddDynamic(this,&thisclass::OnClicked);
 
 	WidgetComp_Cooling = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComp_Cooling"));
 	WidgetComp_Cooling->SetupAttachment(CollsionBoxComp);

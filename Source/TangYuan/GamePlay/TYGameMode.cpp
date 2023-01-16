@@ -3,13 +3,11 @@
 
 #include "TYGameMode.h"
 
-#include "TYCharacter.h"
+#include "ControPawn.h"
 #include "TYPlayerController.h"
-#include "GameFramework/DefaultPawn.h"
 
 ATYGameMode::ATYGameMode()
 {
-	//DefaultPawnClass = ATYCharacter::StaticClass();
-	DefaultPawnClass = ADefaultPawn::StaticClass();
+	DefaultPawnClass = AControPawn::StaticClass();
 	PlayerControllerClass = ATYPlayerController::StaticClass();
 }
