@@ -5,6 +5,8 @@
 
 ATYPlayerController::ATYPlayerController()
 {
+	bShowMouseCursor = true;
 	bEnableClickEvents = true;
 	bEnableTouchEvents = true;
+	bEnableMouseOverEvents = true;
 }

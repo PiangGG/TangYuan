@@ -71,6 +71,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Change();
 	
+	//绑定到鼠标点击SK_Mesh的函数
+	void OnClicked(UPrimitiveComponent* ClickedComp,FKey Key);
 	//component
 public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
