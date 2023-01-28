@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "BaseMissile.generated.h"
 
@@ -24,6 +25,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	//Component
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component|根碰撞组件")
+	USphereComponent* RootCollsionComp;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component|模型根组件")
+	USceneComponent* SceneRoot;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component|模型根组件")
+	UStaticMeshComponent* ST_MeshComp;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component|模型根组件")
+	USkeletalMeshComponent* SK_MeshComp;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component|移动组件")
 	class UProjectileMovementComponent* MovementComponent;
 	

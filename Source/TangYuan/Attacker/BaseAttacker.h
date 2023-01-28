@@ -76,6 +76,8 @@ public:
 	//component
 public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
+	USceneComponent* MeshRootComponent;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	UStaticMeshComponent* ST_MeshComp;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	USkeletalMeshComponent* SK_MeshComp;
@@ -84,6 +86,9 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	UWidgetComponent* WidgetComp_Cooling;
 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
+	USceneComponent* AttackLocationComp;
+	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	UArrowComponent* ArrowComponent;
 

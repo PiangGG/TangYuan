@@ -3,6 +3,8 @@
 
 #include "BaseAttacker.h"
 
+#include "TangYuan/Missile/BaseMissile.h"
+
 // Sets default values
 ABaseAttacker::ABaseAttacker()
 {
@@ -10,21 +12,28 @@ ABaseAttacker::ABaseAttacker()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollsionBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("CollsionBoxComp"));
+	CollsionBoxComp->SetBoxExtent(FVector(45.0f));
 	RootComponent = CollsionBoxComp;
 
+	MeshRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("MeshRootComp"));
+	MeshRootComponent->SetupAttachment(CollsionBoxComp);
+	
 	ST_MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ST_MeshComp"));
-	ST_MeshComp->SetupAttachment(CollsionBoxComp);
+	ST_MeshComp->SetupAttachment(MeshRootComponent);
 	ST_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
 
 	SK_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SK_MeshComp"));
-	SK_MeshComp->SetupAttachment(CollsionBoxComp);
+	SK_MeshComp->SetupAttachment(MeshRootComponent);
 	SK_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
 
+	AttackLocationComp = CreateDefaultSubobject<USceneComponent>(TEXT("AttackLocationComp"));
+	AttackLocationComp->SetupAttachment(MeshRootComponent);
+	
 	WidgetComp_Cooling = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComp_Cooling"));
 	WidgetComp_Cooling->SetupAttachment(CollsionBoxComp);
 
 	ArrowComponent =  CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComp"));
-	ArrowComponent->SetupAttachment(CollsionBoxComp);
+	ArrowComponent->SetupAttachment(MeshRootComponent);
 
 }
 
@@ -74,6 +83,8 @@ void ABaseAttacker::Attack()
 	if (bCanAttack)
 	{
 		ResetAttack();
+
+		GetWorld()->SpawnActor<ABaseMissile>(Missile,AttackLocationComp->GetComponentLocation(),AttackLocationComp->GetComponentRotation());
 	}
 }
 
@@ -107,7 +118,9 @@ void ABaseAttacker::AttackUpdate()
 void ABaseAttacker::Change()
 {
 	FRotator TagetRotater(0.0,ChangeSize,0.0);
-	AddActorLocalRotation(TagetRotater);
+	
+	//AddActorLocalRotation(TagetRotater);
+	MeshRootComponent->AddLocalRotation(TagetRotater);
 }
 
 void ABaseAttacker::OnClicked(UPrimitiveComponent* ClickedComp,FKey Key)
