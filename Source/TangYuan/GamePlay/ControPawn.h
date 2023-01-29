@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "InputMappingContext.h"
 #include "Camera/CameraComponent.h"
+#include "Components/ArrowComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -43,6 +44,8 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Comonent|Movement")
 	UFloatingPawnMovement* Movement;
 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component|Arrow")
+	UArrowComponent* ArrowComponent;
 	//移动
 	void MoveForward(const FInputActionValue& InputActionValue);
 	void MoveRight(const FInputActionValue& InputActionValue);

@@ -23,6 +23,9 @@ AControPawn::AControPawn()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	ArrowComponent =  CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComp"));
+	ArrowComponent->SetupAttachment(RootCompment);
 	
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 }
