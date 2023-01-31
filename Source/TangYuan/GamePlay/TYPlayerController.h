@@ -19,8 +19,11 @@ class TANGYUAN_API ATYPlayerController : public AModularPlayerController
 	
 	ATYPlayerController();
 public:
-	
-	
+	virtual void Tick(float DeltaSeconds) override;
+
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attr|射线基础长度")
+	float LineLength = 10000.0f;
 private:
 	AActor* SelectedActor;
 	
@@ -35,4 +38,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	EControllerState GetControllerState();
+
+	void UpdateSelectedActor(float DeltaSeconds);
+
+	/*处理鼠标点击Actor*/
+	virtual void OnClick(AActor* TargetActor);
+
+	/*设置选中Actor*/
+	virtual void SetSelectedActor(AActor* TargetActor);
 };

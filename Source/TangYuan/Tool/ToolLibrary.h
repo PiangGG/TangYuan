@@ -17,8 +17,8 @@ class TANGYUAN_API UToolLibrary : public UBlueprintFunctionLibrary
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void DebugLog(FString Message);
+	static void DebugLog(FString Message);
 
 private:
-	bool bPrintDebugLog = true;
+	inline static bool bPrintDebugLog = true;
 };

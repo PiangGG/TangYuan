@@ -3,7 +3,9 @@
 
 #include "BaseAttacker.h"
 
+#include "TangYuan/GamePlay/TYPlayerController.h"
 #include "TangYuan/Missile/BaseMissile.h"
+#include "TangYuan/Tool/ToolLibrary.h"
 
 // Sets default values
 ABaseAttacker::ABaseAttacker()
@@ -20,11 +22,11 @@ ABaseAttacker::ABaseAttacker()
 	
 	ST_MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ST_MeshComp"));
 	ST_MeshComp->SetupAttachment(MeshRootComponent);
-	ST_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
+	//ST_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
 
 	SK_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SK_MeshComp"));
 	SK_MeshComp->SetupAttachment(MeshRootComponent);
-	SK_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
+	//SK_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
 
 	AttackLocationComp = CreateDefaultSubobject<USceneComponent>(TEXT("AttackLocationComp"));
 	AttackLocationComp->SetupAttachment(MeshRootComponent);
@@ -41,7 +43,7 @@ ABaseAttacker::ABaseAttacker()
 void ABaseAttacker::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(TimerHandle_Change,this,&ABaseAttacker::Change,Cooling_InRate,true);
+	
 	ResetAttack();
 }
 
@@ -62,8 +64,17 @@ void ABaseAttacker::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 void ABaseAttacker::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
-	UE_LOG(LogTemp, Warning, TEXT("Clicked"));
-	Attack();
+	
+	UToolLibrary::DebugLog("Clicked");
+	if (GetWorld())
+	{
+		ATYPlayerController * PC = Cast<ATYPlayerController>(GetWorld()->GetFirstPlayerController());
+		if (PC)
+		{
+			PC->OnClick(this);
+		}
+	}
+	//Attack();
 }
 
 void ABaseAttacker::NotifyActorOnInputTouchBegin(const ETouchIndex::Type FingerIndex)
@@ -85,6 +96,8 @@ void ABaseAttacker::Attack()
 		ResetAttack();
 
 		GetWorld()->SpawnActor<ABaseMissile>(Missile,AttackLocationComp->GetComponentLocation(),AttackLocationComp->GetComponentRotation());
+
+		GetWorldTimerManager().ClearTimer(TimerHandle_Change);
 	}
 }
 
@@ -100,6 +113,8 @@ void ABaseAttacker::ResetAttack()
 
 void ABaseAttacker::ResetAttackTimeHandler()
 {
+	GetWorldTimerManager().SetTimer(TimerHandle_Change,this,&ABaseAttacker::Change,Cooling_InRate,true);
+	
 	GetWorldTimerManager().ClearTimer(TimerHandle_AttackCooling);
 	GetWorldTimerManager().ClearTimer(TimerHandle_ReSetAttackCool);
 }
