@@ -41,14 +41,16 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
 	bool bCanAttack = false;
 	//攻击之后的冷却
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attributes|Basic")
 	float Cooling_Max = 2.0f;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attributes|Basic")
 	float Cooling_Current = 0.0f;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attributes|Basic")
 	float Cooling_InRate = 0.001f;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attributes|Basic")
 	float Cooling_Alpha = 0.001f;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attributes|Basic")
+	float CollSionSize = 45.0f;
 	//攻击函数
 	UFUNCTION(BlueprintCallable)
 	void Attack();
@@ -81,9 +83,15 @@ public:
 	//component
 
 	//放置在场景中的物体自动设置位置
+	UFUNCTION(BlueprintCallable)
 	void AutoSetLocation();
 
+	UPROPERTY()
 	class AMapUnit* AtMapUnit;
+
+	//获取周围地图单元,能否设置位置
+	UFUNCTION(BlueprintCallable)
+	bool CanSetActorLocation();
 public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	USceneComponent* MeshRootComponent;

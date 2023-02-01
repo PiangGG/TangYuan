@@ -72,10 +72,12 @@ void AMapUnit::SetUnitVisble(bool bShow)
 		if (Actors.Num()>0)
 		{
 			MeshComponent->SetMaterial(0,Material_R);
+			SetbOverlapActor(true);
 		}
 		else
 		{
 			MeshComponent->SetMaterial(0,Material_G);
+			SetbOverlapActor(false);
 		}
 	}
 	MeshComponent->SetVisibility(bShowStaticMesh);
@@ -95,11 +97,23 @@ void AMapUnit::UpdateUnitMateria(float DeltaTime)
 		if (Actors.Num()>0)
 		{
 			MeshComponent->SetMaterial(0,Material_R);
+			SetbOverlapActor(true);
 		}
 		else
 		{
 			MeshComponent->SetMaterial(0,Material_G);
+			SetbOverlapActor(false);
 		}
 	}
+}
+
+bool AMapUnit::GetbOverlapActor()
+{
+	return bOverlapActor;
+}
+
+void AMapUnit::SetbOverlapActor(bool var)
+{
+	bOverlapActor = var;
 }
 

@@ -97,6 +97,7 @@ void ATYPlayerController::SetSelectedActor(AActor* TargetActor)
 	else
 	{
 		SelectedActor = nullptr;
+		SetActorLocationToUnitMap(TargetActor);
 		Cast<ABaseAttacker>(TargetActor)->UnSelected();
 		UToolLibrary::DebugLog("SetNullSelectedActor");
 	}
@@ -107,5 +108,41 @@ void ATYPlayerController::SelectedActorAttack(AActor* TargetActor)
 	if (Cast<ABaseAttacker>(TargetActor))
 	{
 		Cast<ABaseAttacker>(TargetActor)->Attack();
+	}
+}
+
+void ATYPlayerController::SetActorLocationToUnitMap(AActor* TargetActor)
+{
+	if (TargetActor&&GetWorld())
+	{
+		FHitResult HitResult;
+		FVector StartLocation,Direction,EndLocation;;
+		DeprojectMousePositionToWorld(StartLocation,Direction);
+		EndLocation = StartLocation+(Direction*LineLength);
+
+		const TArray<AActor*> ActorsToIgnore;
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery3,true,ActorsToIgnore,EDrawDebugTrace::ForOneFrame,HitResult,true))
+		{
+			if (HitResult.GetActor()&&Cast<AMapUnit>(HitResult.GetActor()))
+			{
+				if (Cast<ABaseAttacker>(TargetActor)->CanSetActorLocation())
+				{
+					TargetActor->SetActorLocation(Cast<AMapUnit>(HitResult.GetActor())->GetBuildLocation());
+					Cast<ABaseAttacker>(TargetActor)->AtMapUnit = Cast<AMapUnit>(HitResult.GetActor());
+				}
+				else
+				{
+					if (Cast<ABaseAttacker>(TargetActor)->AtMapUnit)
+					{
+						TargetActor->SetActorLocation(Cast<ABaseAttacker>(TargetActor)->AtMapUnit->GetBuildLocation());
+					}
+					else
+					{
+						TargetActor->SetActorLocation(FVector::ZeroVector);
+						UToolLibrary::DebugLog("TargetActor no AtMapUnit last");
+					}
+				}
+			}
+		}
 	}
 }

@@ -44,7 +44,13 @@ public:
 	void UpdateUnitMateria(float DeltaTime);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Base|ShowMesh")
 	FVector BoxExtent = FVector(50.0);
-	
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Base")
+	bool bOverlapActor = false;
+	UFUNCTION(BlueprintCallable)
+	bool GetbOverlapActor();
+	UFUNCTION(BlueprintCallable)
+	void SetbOverlapActor(bool var);
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Base|Material")
 	UMaterialInterface *Material_G;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Base|Material")

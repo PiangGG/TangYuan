@@ -51,4 +51,6 @@ public:
 	 * 战斗状态下点击
 	 */
 	virtual void SelectedActorAttack(AActor* TargetActor);
+
+	virtual void SetActorLocationToUnitMap(AActor* TargetActor);
 };

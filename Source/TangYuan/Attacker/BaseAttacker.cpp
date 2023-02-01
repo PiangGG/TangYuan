@@ -15,20 +15,26 @@ ABaseAttacker::ABaseAttacker()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollsionBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("CollsionBoxComp"));
-	CollsionBoxComp->SetBoxExtent(FVector(45.0f));
+	CollsionBoxComp->SetBoxExtent(FVector(CollSionSize));
+	CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CollsionBoxComp->SetCollisionProfileName(FName("AttackerCollsion"));
 	RootComponent = CollsionBoxComp;
-
+	
 	MeshRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("MeshRootComp"));
 	MeshRootComponent->SetupAttachment(CollsionBoxComp);
 	
 	ST_MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ST_MeshComp"));
 	ST_MeshComp->SetupAttachment(MeshRootComponent);
+	ST_MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	ST_MeshComp->SetCollisionProfileName(FName("AttackerMesh"));
 	ST_MeshComp->bCastDynamicShadow = false;
 	ST_MeshComp->bCastStaticShadow = false;
 	//ST_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
 
 	SK_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SK_MeshComp"));
 	SK_MeshComp->SetupAttachment(MeshRootComponent);
+	SK_MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SK_MeshComp->SetCollisionProfileName(FName("AttackerMesh"));
 	SK_MeshComp->bCastDynamicShadow = false;
 	SK_MeshComp->bCastStaticShadow = false;
 	//SK_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
@@ -41,7 +47,6 @@ ABaseAttacker::ABaseAttacker()
 
 	ArrowComponent =  CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComp"));
 	ArrowComponent->SetupAttachment(MeshRootComponent);
-
 }
 
 // Called when the game starts or when spawned
@@ -50,7 +55,7 @@ void ABaseAttacker::BeginPlay()
 	Super::BeginPlay();
 	
 	ResetAttack();
-	AutoSetLocation();
+	//AutoSetLocation();
 }
 
 // Called every frame
@@ -149,11 +154,13 @@ void ABaseAttacker::Change()
 void ABaseAttacker::OnSelected()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_Change);
+	CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseAttacker::UnSelected()
 {
 	ResetAttack();
+	CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void ABaseAttacker::OnClicked(UPrimitiveComponent* ClickedComp,FKey Key)
@@ -188,4 +195,19 @@ void ABaseAttacker::AutoSetLocation()
 			this->SetActorLocation(AtMapUnit->GetBuildLocation());
 		}
 	}
+}
+
+bool ABaseAttacker::CanSetActorLocation()
+{
+	TArray<AActor*> OverlapUnitMaps;
+	GetOverlappingActors(OverlapUnitMaps,AMapUnit::StaticClass());
+
+	for (auto OverlapUnitMap : OverlapUnitMaps)
+	{
+		if (Cast<AMapUnit>(OverlapUnitMap)->GetbOverlapActor())
+		{
+			return false;
+		}
+	}
+	return true;
 }
