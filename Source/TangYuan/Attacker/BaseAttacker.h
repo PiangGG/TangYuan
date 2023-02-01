@@ -28,6 +28,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+
 protected:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
 	
@@ -70,10 +72,18 @@ public:
 	float bCanChange = true;
 	UFUNCTION(BlueprintCallable)
 	void Change();
-	
+	UFUNCTION(BlueprintCallable)
+	void OnSelected();
+	UFUNCTION(BlueprintCallable)
+	void UnSelected();
 	//绑定到鼠标点击SK_Mesh的函数
 	void OnClicked(UPrimitiveComponent* ClickedComp,FKey Key);
 	//component
+
+	//放置在场景中的物体自动设置位置
+	void AutoSetLocation();
+
+	class AMapUnit* AtMapUnit;
 public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	USceneComponent* MeshRootComponent;

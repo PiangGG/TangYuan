@@ -4,6 +4,7 @@
 #include "BaseAttacker.h"
 
 #include "TangYuan/GamePlay/TYPlayerController.h"
+#include "TangYuan/Map/MapUnit.h"
 #include "TangYuan/Missile/BaseMissile.h"
 #include "TangYuan/Tool/ToolLibrary.h"
 
@@ -22,10 +23,14 @@ ABaseAttacker::ABaseAttacker()
 	
 	ST_MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ST_MeshComp"));
 	ST_MeshComp->SetupAttachment(MeshRootComponent);
+	ST_MeshComp->bCastDynamicShadow = false;
+	ST_MeshComp->bCastStaticShadow = false;
 	//ST_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
 
 	SK_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SK_MeshComp"));
 	SK_MeshComp->SetupAttachment(MeshRootComponent);
+	SK_MeshComp->bCastDynamicShadow = false;
+	SK_MeshComp->bCastStaticShadow = false;
 	//SK_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
 
 	AttackLocationComp = CreateDefaultSubobject<USceneComponent>(TEXT("AttackLocationComp"));
@@ -45,6 +50,7 @@ void ABaseAttacker::BeginPlay()
 	Super::BeginPlay();
 	
 	ResetAttack();
+	AutoSetLocation();
 }
 
 // Called every frame
@@ -121,7 +127,6 @@ void ABaseAttacker::ResetAttackTimeHandler()
 
 void ABaseAttacker::AttackUpdate()
 {
-	
 	Cooling_Current = FMath::Clamp(Cooling_Max-GetWorldTimerManager().GetTimerRemaining(TimerHandle_ReSetAttackCool),0.0f,Cooling_Max);
 	Cooling_Alpha = Cooling_Current/Cooling_Max;
 	if (FMath::IsNearlyEqual(Cooling_Alpha,1.0f,Cooling_InRate))
@@ -134,11 +139,53 @@ void ABaseAttacker::Change()
 {
 	FRotator TagetRotater(0.0,ChangeSize,0.0);
 	
-	//AddActorLocalRotation(TagetRotater);
-	MeshRootComponent->AddLocalRotation(TagetRotater);
+	if (bCanChange)
+	{
+		//AddActorLocalRotation(TagetRotater);
+		MeshRootComponent->AddLocalRotation(TagetRotater);
+	}
+}
+
+void ABaseAttacker::OnSelected()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle_Change);
+}
+
+void ABaseAttacker::UnSelected()
+{
+	ResetAttack();
 }
 
 void ABaseAttacker::OnClicked(UPrimitiveComponent* ClickedComp,FKey Key)
 {
 	int i = 1;
+}
+
+void ABaseAttacker::AutoSetLocation()
+{
+	TArray<AActor*>OverlapMapUnit;
+	CollsionBoxComp->GetOverlappingActors(OverlapMapUnit,AMapUnit::StaticClass());
+
+	if (!OverlapMapUnit.IsEmpty())
+	{
+		FVector InitLocation = GetActorLocation();
+
+		double Distence = FVector::Distance(InitLocation,Cast<AMapUnit>(OverlapMapUnit[0])->GetBuildLocation());
+
+		AtMapUnit = Cast<AMapUnit>(OverlapMapUnit[0]);
+		
+		for (AActor *MapUnit : OverlapMapUnit)
+		{
+			if (Distence>FVector::Distance(InitLocation,Cast<AMapUnit>(MapUnit)->GetBuildLocation()))
+			{
+				Distence = FVector::Distance(InitLocation,Cast<AMapUnit>(MapUnit)->GetBuildLocation());
+
+				AtMapUnit = Cast<AMapUnit>(MapUnit);
+			}
+		}
+		if (AtMapUnit)
+		{
+			this->SetActorLocation(AtMapUnit->GetBuildLocation());
+		}
+	}
 }

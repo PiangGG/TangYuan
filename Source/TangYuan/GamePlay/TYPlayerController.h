@@ -46,4 +46,9 @@ public:
 
 	/*设置选中Actor*/
 	virtual void SetSelectedActor(AActor* TargetActor);
+
+	/*
+	 * 战斗状态下点击
+	 */
+	virtual void SelectedActorAttack(AActor* TargetActor);
 };

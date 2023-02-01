@@ -5,6 +5,7 @@
 
 #include "Kismet/KismetSystemLibrary.h"
 #include "TangYuan/Attacker/BaseAttacker.h"
+#include "TangYuan/Map/MapUnit.h"
 #include "TangYuan/Tool/ToolLibrary.h"
 
 
@@ -58,9 +59,9 @@ void ATYPlayerController::UpdateSelectedActor(float DeltaSeconds)
 		const TArray<AActor*> ActorsToIgnore;
 		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery3,true,ActorsToIgnore,EDrawDebugTrace::ForOneFrame,HitResult,true))
 		{
-			if (HitResult.GetActor())
+			if (HitResult.GetActor()&&Cast<AMapUnit>(HitResult.GetActor()))
 			{
-				SelectedActor->SetActorLocation(HitResult.GetActor()->GetActorLocation());
+				SelectedActor->SetActorLocation(Cast<AMapUnit>(HitResult.GetActor())->GetBuildLocation());
 			}
 		}
 	}
@@ -78,10 +79,7 @@ void ATYPlayerController::OnClick(AActor* TargetActor)
 		SetSelectedActor(TargetActor);
 		break;
 	case EControllerState::ECombat:
-		if (Cast<ABaseAttacker>(TargetActor))
-		{
-			Cast<ABaseAttacker>(TargetActor)->Attack();
-		}
+		SelectedActorAttack(TargetActor);
 		break;
 	default: ;
 	}
@@ -93,11 +91,21 @@ void ATYPlayerController::SetSelectedActor(AActor* TargetActor)
 	if (!SelectedActor)
 	{
 		SelectedActor = TargetActor;
+		Cast<ABaseAttacker>(TargetActor)->OnSelected();
 		UToolLibrary::DebugLog("SetNewSelectedActor");
 	}
 	else
 	{
 		SelectedActor = nullptr;
+		Cast<ABaseAttacker>(TargetActor)->UnSelected();
 		UToolLibrary::DebugLog("SetNullSelectedActor");
+	}
+}
+
+void ATYPlayerController::SelectedActorAttack(AActor* TargetActor)
+{
+	if (Cast<ABaseAttacker>(TargetActor))
+	{
+		Cast<ABaseAttacker>(TargetActor)->Attack();
 	}
 }

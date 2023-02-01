@@ -17,18 +17,23 @@ AMapUnit::AMapUnit()
 	CollsionComp->SetBoxExtent(BoxExtent);
 	CollsionComp->SetRelativeLocation(FVector(0.0f,0.0f,BoxExtent.Z));
 	CollsionComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CollsionComp->SetCollisionProfileName(FName("MapUnit"));
+	CollsionComp->SetCollisionProfileName(FName("MapUnitBox"));
 	
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	MeshComponent->SetupAttachment(RootComp);
 	MeshComponent->SetRelativeLocation(FVector(0.0f,0.0f,1.0f));
-	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	MeshComponent->SetCollisionProfileName(FName("Nocollision"));
+	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	MeshComponent->SetCollisionProfileName(FName("MapUnitMesh"));
 	MeshComponent->SetStaticMesh(LoadObject<UStaticMesh>(nullptr,TEXT("/Script/Engine.StaticMesh'/Game/Mesh_ST/Mesh/Plane.Plane'")));
 	
 	Material_G  = LoadObject<UMaterialInterface>(nullptr,TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Materials/Map/M_MapUnitColor_G.M_MapUnitColor_G'"));
 	Material_R  = LoadObject<UMaterialInterface>(nullptr,TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Materials/Map/M_MapUnitColor_R.M_MapUnitColor_R'"));
 	MeshComponent->SetMaterial(0,Material_G);
+}
+
+FVector AMapUnit::GetBuildLocation()
+{
+	return  CollsionComp->GetComponentLocation();
 }
 
 // Called when the game starts or when spawned
@@ -43,6 +48,7 @@ void AMapUnit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UpdateUnitMateria(DeltaTime);
 }
 
 void AMapUnit::PostInitializeComponents()
@@ -78,5 +84,22 @@ void AMapUnit::SetUnitVisble(bool bShow)
 bool AMapUnit::GetUnitVisble()
 {
 	return bShowStaticMesh;
+}
+
+void AMapUnit::UpdateUnitMateria(float DeltaTime)
+{
+	if (bShowStaticMesh)
+	{
+		TArray<AActor*>Actors;
+		CollsionComp->GetOverlappingActors(Actors);
+		if (Actors.Num()>0)
+		{
+			MeshComponent->SetMaterial(0,Material_R);
+		}
+		else
+		{
+			MeshComponent->SetMaterial(0,Material_G);
+		}
+	}
 }
 

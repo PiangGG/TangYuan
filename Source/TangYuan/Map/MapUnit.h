@@ -16,6 +16,7 @@ public:
 	// Sets default values for this actor's properties
 	AMapUnit();
 
+	virtual FVector GetBuildLocation();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,7 +40,8 @@ public:
 	void SetUnitVisble(bool bShow);
 	UFUNCTION(BlueprintCallable)
 	bool GetUnitVisble();
-
+	UFUNCTION(BlueprintCallable)
+	void UpdateUnitMateria(float DeltaTime);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Base|ShowMesh")
 	FVector BoxExtent = FVector(50.0);
 	
