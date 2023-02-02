@@ -3,6 +3,8 @@
 
 #include "MapUnit.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+
 // Sets default values
 AMapUnit::AMapUnit()
 {
@@ -72,12 +74,10 @@ void AMapUnit::SetUnitVisble(bool bShow)
 		if (Actors.Num()>0)
 		{
 			MeshComponent->SetMaterial(0,Material_R);
-			SetbOverlapActor(true);
 		}
 		else
 		{
 			MeshComponent->SetMaterial(0,Material_G);
-			SetbOverlapActor(false);
 		}
 	}
 	MeshComponent->SetVisibility(bShowStaticMesh);
@@ -97,23 +97,21 @@ void AMapUnit::UpdateUnitMateria(float DeltaTime)
 		if (Actors.Num()>0)
 		{
 			MeshComponent->SetMaterial(0,Material_R);
-			SetbOverlapActor(true);
 		}
 		else
 		{
 			MeshComponent->SetMaterial(0,Material_G);
-			SetbOverlapActor(false);
 		}
 	}
 }
 
-bool AMapUnit::GetbOverlapActor()
+bool AMapUnit::GetbOverlapActor(AActor* ignoreActor)
 {
-	return bOverlapActor;
-}
+	TArray<AActor*> Actors;
+	Actors.Add(ignoreActor);
+	TArray<FHitResult> HitResults;
+	UKismetSystemLibrary::BoxTraceMulti(GetWorld(),GetBuildLocation(),GetBuildLocation(),BoxExtent,FRotator(0),ETraceTypeQuery::TraceTypeQuery4,false,Actors,EDrawDebugTrace::ForDuration,HitResults,true);
 
-void AMapUnit::SetbOverlapActor(bool var)
-{
-	bOverlapActor = var;
+	return !(HitResults.IsEmpty());
 }
 

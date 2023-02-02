@@ -154,13 +154,13 @@ void ABaseAttacker::Change()
 void ABaseAttacker::OnSelected()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_Change);
-	CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseAttacker::UnSelected()
 {
 	ResetAttack();
-	CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void ABaseAttacker::OnClicked(UPrimitiveComponent* ClickedComp,FKey Key)
@@ -204,7 +204,7 @@ bool ABaseAttacker::CanSetActorLocation()
 
 	for (auto OverlapUnitMap : OverlapUnitMaps)
 	{
-		if (Cast<AMapUnit>(OverlapUnitMap)->GetbOverlapActor())
+		if (Cast<AMapUnit>(OverlapUnitMap)->GetbOverlapActor(this))
 		{
 			return false;
 		}
