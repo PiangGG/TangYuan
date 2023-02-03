@@ -55,6 +55,10 @@ void ABaseAttacker::BeginPlay()
 	Super::BeginPlay();
 	
 	ResetAttack();
+
+	CollsionBoxComp->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnCollsionBoxCompBeginOverlap);
+
+	CollsionBoxComp->OnComponentEndOverlap.AddDynamic(this,&ThisClass::OnCollsionBoxCompEndOverlap);
 	//AutoSetLocation();
 }
 
@@ -168,9 +172,29 @@ void ABaseAttacker::OnClicked(UPrimitiveComponent* ClickedComp,FKey Key)
 	int i = 1;
 }
 
+void ABaseAttacker::OnCollsionBoxCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (Cast<AMapUnit>(OtherActor))
+	{
+	UToolLibrary::DebugLog("OnCollsionBoxCompBeginOverlap");
+		Cast<AMapUnit>(OtherActor)->SetUnitVisble(true);
+	}
+}
+
+void ABaseAttacker::OnCollsionBoxCompEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (Cast<AMapUnit>(OtherActor))
+	{
+		UToolLibrary::DebugLog("OnCollsionBoxCompEndOverlap");
+		Cast<AMapUnit>(OtherActor)->SetUnitVisble(false);
+	}
+}
+
 void ABaseAttacker::AutoSetLocation()
 {
-	TArray<AActor*>OverlapMapUnit;
+	
 	CollsionBoxComp->GetOverlappingActors(OverlapMapUnit,AMapUnit::StaticClass());
 
 	if (!OverlapMapUnit.IsEmpty())
@@ -189,10 +213,17 @@ void ABaseAttacker::AutoSetLocation()
 
 				AtMapUnit = Cast<AMapUnit>(MapUnit);
 			}
+			Cast<AMapUnit>(MapUnit)->SetOnActor(this);
 		}
 		if (AtMapUnit)
 		{
 			this->SetActorLocation(AtMapUnit->GetBuildLocation());
+
+			for (auto MapUnit : OverlapMapUnit)
+			{
+				Cast<AMapUnit>(MapUnit)->SetUnitVisble(false);
+				Cast<AMapUnit>(MapUnit)->SetOnActor(this);
+			}
 		}
 	}
 }
@@ -210,4 +241,18 @@ bool ABaseAttacker::CanSetActorLocation()
 		}
 	}
 	return true;
+}
+
+void ABaseAttacker::SetOverlapMapUnitShow()
+{
+	TArray<AActor*> OverlapUnitMaps;
+	GetOverlappingActors(OverlapUnitMaps,AMapUnit::StaticClass());
+
+	for (auto OverlapUnitMap : OverlapUnitMaps)
+	{
+		if (Cast<AMapUnit>(OverlapUnitMap)->GetbOverlapActor(this))
+		{
+			
+		}
+	}
 }

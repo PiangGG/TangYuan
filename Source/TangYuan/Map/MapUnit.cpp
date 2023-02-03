@@ -68,10 +68,7 @@ void AMapUnit::SetUnitVisble(bool bShow)
 	bShowStaticMesh = bShow;
 	if (bShowStaticMesh)
 	{
-		//MeshComponent->SetMaterial(0,);
-		TArray<AActor*>Actors;
-		CollsionComp->GetOverlappingActors(Actors);
-		if (Actors.Num()>0)
+		if (HaveActor)
 		{
 			MeshComponent->SetMaterial(0,Material_R);
 		}
@@ -92,9 +89,10 @@ void AMapUnit::UpdateUnitMateria(float DeltaTime)
 {
 	if (bShowStaticMesh)
 	{
-		TArray<AActor*>Actors;
-		CollsionComp->GetOverlappingActors(Actors);
-		if (Actors.Num()>0)
+		TArray<FHitResult> HitResults;
+	
+		//if (UKismetSystemLibrary::BoxTraceMulti(GetWorld(),GetBuildLocation(),GetBuildLocation(),BoxExtent,FRotator(0),ETraceTypeQuery::TraceTypeQuery4,false,ignoreActors,EDrawDebugTrace::ForOneFrame,HitResults,true))
+		if (HaveActor)
 		{
 			MeshComponent->SetMaterial(0,Material_R);
 		}
@@ -107,11 +105,38 @@ void AMapUnit::UpdateUnitMateria(float DeltaTime)
 
 bool AMapUnit::GetbOverlapActor(AActor* ignoreActor)
 {
-	TArray<AActor*> Actors;
-	Actors.Add(ignoreActor);
+	AddIgnoreTraceActor(ignoreActor);
 	TArray<FHitResult> HitResults;
-	UKismetSystemLibrary::BoxTraceMulti(GetWorld(),GetBuildLocation(),GetBuildLocation(),BoxExtent,FRotator(0),ETraceTypeQuery::TraceTypeQuery4,false,Actors,EDrawDebugTrace::ForDuration,HitResults,true);
+	UKismetSystemLibrary::BoxTraceMulti(GetWorld(),GetBuildLocation(),GetBuildLocation(),BoxExtent,FRotator(0),ETraceTypeQuery::TraceTypeQuery4,false,ignoreActors,EDrawDebugTrace::ForDuration,HitResults,true);
 
 	return !(HitResults.IsEmpty());
 }
 
+void AMapUnit::AddIgnoreTraceActor(AActor* Actor)
+{
+	ignoreActors.Add(Actor);
+}
+
+void AMapUnit::RemoveIgnoreTraceActor(AActor* Actor)
+{
+	ignoreActors.Remove(Actor);
+}
+
+bool AMapUnit::GetbHaveActor()
+{
+	return HaveActor;
+}
+
+void AMapUnit::SetOnActor(AActor* actor)
+{
+	if (actor)
+	{
+		OnActor = actor;
+		HaveActor = true;
+	}
+	else
+	{
+		OnActor = nullptr;
+		HaveActor = false;
+	}
+}

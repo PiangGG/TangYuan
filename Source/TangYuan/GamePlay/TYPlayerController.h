@@ -21,6 +21,7 @@ class TANGYUAN_API ATYPlayerController : public AModularPlayerController
 public:
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void BeginPlay() override;
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attr|射线基础长度")
 	float LineLength = 10000.0f;
@@ -28,6 +29,13 @@ private:
 	AActor* SelectedActor;
 	
 	AActor* HoverActor;
+
+	//当前鼠标所在地图单位
+	UPROPERTY()
+	AActor* CurrentHoverMapUnit;
+	//上一次鼠标所在地图单位
+	UPROPERTY()
+	AActor* LastHoverMapUnit;
 public:
 	//控制器状态
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="")
@@ -44,6 +52,10 @@ public:
 	/*处理鼠标点击Actor*/
 	virtual void OnClick(AActor* TargetActor);
 
+	//鼠标屏幕位置向控制器方向是否命中地面
+	UFUNCTION(BlueprintCallable)
+	bool GetOnClickbMapUnitActor();
+	
 	/*设置选中Actor*/
 	virtual void SetSelectedActor(AActor* TargetActor);
 
@@ -53,4 +65,7 @@ public:
 	virtual void SelectedActorAttack(AActor* TargetActor);
 
 	virtual void SetActorLocationToUnitMap(AActor* TargetActor);
+
+private:
+	
 };

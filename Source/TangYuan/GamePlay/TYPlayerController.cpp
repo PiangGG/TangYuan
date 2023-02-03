@@ -24,6 +24,12 @@ void ATYPlayerController::Tick(float DeltaSeconds)
 	UpdateSelectedActor(DeltaSeconds);
 }
 
+void ATYPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
 void ATYPlayerController::SetControllerState(EControllerState State)
 {
 	ControllerState=State;
@@ -62,12 +68,16 @@ void ATYPlayerController::UpdateSelectedActor(float DeltaSeconds)
 			if (HitResult.GetActor()&&Cast<AMapUnit>(HitResult.GetActor()))
 			{
 				SelectedActor->SetActorLocation(Cast<AMapUnit>(HitResult.GetActor())->GetBuildLocation());
+				// LastHoverMapUnit = CurrentHoverMapUnit;
+				// CurrentHoverMapUnit = Cast<AMapUnit>(HitResult.GetActor());
+				return;
 			}
 		}
 	}
 	else if (ControllerState==EControllerState::EBuild&&!SelectedActor&&GetWorld())
 	{
-		
+		// LastHoverMapUnit = CurrentHoverMapUnit;
+		// CurrentHoverMapUnit = nullptr;
 	}
 }
 
@@ -84,6 +94,25 @@ void ATYPlayerController::OnClick(AActor* TargetActor)
 	default: ;
 	}
 }
+
+bool ATYPlayerController::GetOnClickbMapUnitActor()
+{
+	FHitResult HitResult;
+	FVector StartLocation,Direction,EndLocation;;
+	DeprojectMousePositionToWorld(StartLocation,Direction);
+	EndLocation = StartLocation+(Direction*LineLength);
+
+	const TArray<AActor*> ActorsToIgnore;
+	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery3,true,ActorsToIgnore,EDrawDebugTrace::ForOneFrame,HitResult,true))
+	{
+		if (HitResult.GetActor()&&Cast<AMapUnit>(HitResult.GetActor()))
+		{
+			return true;
+		}
+	}
+	return  false;
+}
+
 
 void ATYPlayerController::SetSelectedActor(AActor* TargetActor)
 {
@@ -121,7 +150,7 @@ void ATYPlayerController::SetActorLocationToUnitMap(AActor* TargetActor)
 		EndLocation = StartLocation+(Direction*LineLength);
 
 		const TArray<AActor*> ActorsToIgnore;
-		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery3,true,ActorsToIgnore,EDrawDebugTrace::ForOneFrame,HitResult,true))
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery3,true,ActorsToIgnore,EDrawDebugTrace::ForDuration,HitResult,true,FLinearColor::Blue))
 		{
 			if (HitResult.GetActor()&&Cast<AMapUnit>(HitResult.GetActor()))
 			{

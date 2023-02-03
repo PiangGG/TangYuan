@@ -52,5 +52,24 @@ public:
 	UMaterialInterface *Material_G;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Base|Material")
 	UMaterialInterface *Material_R;
+
+	UPROPERTY()
+	TArray<AActor*> ignoreActors;
+	UFUNCTION(BlueprintCallable)
+	void AddIgnoreTraceActor(AActor* Actor);
+	UFUNCTION(BlueprintCallable)
+	void RemoveIgnoreTraceActor(AActor* Actor);
+
+	UPROPERTY()
+	bool HaveActor = false;
+	UFUNCTION()
+	bool GetbHaveActor();
+
+	//在地圖單元上面的Actor
+	UPROPERTY()
+	AActor* OnActor = nullptr;
+	UFUNCTION(BlueprintCallable)
+	void SetOnActor(AActor* actor);
 };
+
 

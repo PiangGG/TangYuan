@@ -36,6 +36,10 @@ protected:
 	virtual void NotifyActorOnInputTouchBegin(const ETouchIndex::Type FingerIndex);
 	
 	virtual void NotifyActorOnInputTouchEnd(const ETouchIndex::Type FingerIndex);
+
+	virtual void OnCollsionBoxCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	
+	virtual void OnCollsionBoxCompEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 public:
 	//是否可以攻击
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Attributes|Basic")
@@ -92,6 +96,11 @@ public:
 	//获取周围地图单元,能否设置位置
 	UFUNCTION(BlueprintCallable)
 	bool CanSetActorLocation();
+
+	//获取周围地图单元,能否设置位置
+	UFUNCTION(BlueprintCallable)
+	void SetOverlapMapUnitShow();
+
 public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	USceneComponent* MeshRootComponent;
@@ -112,4 +121,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	TSubclassOf<class ABaseMissile> Missile;
+
+	UPROPERTY()
+	TArray<AActor*> OverlapMapUnit;
 };
