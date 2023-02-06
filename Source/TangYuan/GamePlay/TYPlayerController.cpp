@@ -175,3 +175,22 @@ void ATYPlayerController::SetActorLocationToUnitMap(AActor* TargetActor)
 		}
 	}
 }
+
+void ATYPlayerController::LineTraceMapUnit()
+{
+	UToolLibrary::DebugLog("LineTraceMapUnit");
+}
+
+void ATYPlayerController::OnClickStarted()
+{
+	UToolLibrary::DebugLog("OnClickStarted");
+	if (true)
+	{
+		
+	}
+}
+
+void ATYPlayerController::OnClickCompleted()
+{
+	UToolLibrary::DebugLog("OnClickCompleted");
+}

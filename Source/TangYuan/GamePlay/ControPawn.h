@@ -52,6 +52,9 @@ public:
 
 	//推拉摄像机
 	void PushCamera(const FInputActionValue& InputActionValue);
+
+	void OnClickStarted(const FInputActionValue& InputActionValue);
+	void OnClickCompleted(const FInputActionValue& InputActionValue);
 	
 	//相机偏移
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Camera|Offsize")
@@ -74,6 +77,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="EnhancedInput|Action", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UInputAction> IA_PushCamera;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="EnhancedInput|Action", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UInputAction> IA_OnClick;
 };
+
 
 

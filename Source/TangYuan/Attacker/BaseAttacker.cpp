@@ -252,7 +252,7 @@ void ABaseAttacker::SetOverlapMapUnitShow()
 	{
 		if (Cast<AMapUnit>(OverlapUnitMap)->GetbOverlapActor(this))
 		{
-			
+			Cast<AMapUnit>(OverlapUnitMap)->SetUnitVisble(true);
 		}
 	}
 }

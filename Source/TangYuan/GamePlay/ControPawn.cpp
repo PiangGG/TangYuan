@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "TYPlayerController.h"
 
 // Sets default values
 AControPawn::AControPawn()
@@ -73,6 +74,12 @@ void AControPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		{
 			EnhancedInputComponent->BindAction(IA_PushCamera, ETriggerEvent::Triggered, this, &AControPawn::PushCamera);
 		}
+		if (IA_OnClick)
+		{
+			EnhancedInputComponent->BindAction(IA_OnClick, ETriggerEvent::Started, this, &AControPawn::OnClickStarted);
+			EnhancedInputComponent->BindAction(IA_OnClick, ETriggerEvent::Completed, this, &AControPawn::OnClickCompleted);
+
+		}
 	}
 }
 
@@ -107,5 +114,21 @@ void AControPawn::PushCamera(const FInputActionValue& InputActionValue)
 			CameraOffsize_Current +=(InputActionValue.GetMagnitude()*CameraOffsize_Rate);
 			SpringArmComponent->TargetArmLength = CameraOffsize_Current;
 		}
+	}
+}
+
+void AControPawn::OnClickStarted(const FInputActionValue& InputActionValue)
+{
+	if (GetController()&&Cast<ATYPlayerController>(GetController()))
+	{
+		Cast<ATYPlayerController>(GetController())->OnClickStarted();
+	}
+}
+
+void AControPawn::OnClickCompleted(const FInputActionValue& InputActionValue)
+{
+	if (GetController()&&Cast<ATYPlayerController>(GetController()))
+	{
+		Cast<ATYPlayerController>(GetController())->OnClickCompleted();
 	}
 }

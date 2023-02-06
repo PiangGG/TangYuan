@@ -66,6 +66,11 @@ public:
 
 	virtual void SetActorLocationToUnitMap(AActor* TargetActor);
 
+	virtual void LineTraceMapUnit();
+
+	virtual void OnClickStarted();
+	
+	virtual void OnClickCompleted();
 private:
 	
 };
