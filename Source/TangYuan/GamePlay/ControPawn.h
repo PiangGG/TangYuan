@@ -50,6 +50,11 @@ public:
 	void MoveForward(const FInputActionValue& InputActionValue);
 	void MoveRight(const FInputActionValue& InputActionValue);
 
+	void Move(const FInputActionValue& InputActionValue);
+	
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Base|MoveSize")
+	float MoveSize = 6.0f;
+	
 	//推拉摄像机
 	void PushCamera(const FInputActionValue& InputActionValue);
 
@@ -79,6 +84,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="EnhancedInput|Action", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UInputAction> IA_OnClick;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="EnhancedInput|Action", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UInputAction> IA_Move;
 };
 
 

@@ -37,8 +37,10 @@ protected:
 	
 	virtual void NotifyActorOnInputTouchEnd(const ETouchIndex::Type FingerIndex);
 
+	UFUNCTION()
 	virtual void OnCollsionBoxCompBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	
+
+	UFUNCTION()
 	virtual void OnCollsionBoxCompEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 public:
 	//是否可以攻击
@@ -90,9 +92,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AutoSetLocation();
 
+	//actor所在的地图单元
 	UPROPERTY()
 	class AMapUnit* AtMapUnit;
-
+	
+	UPROPERTY()
+	TArray<AMapUnit*> OverlapUnitMaps;
+	
 	//获取周围地图单元,能否设置位置
 	UFUNCTION(BlueprintCallable)
 	bool CanSetActorLocation();

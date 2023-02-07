@@ -55,10 +55,7 @@ void ABaseAttacker::BeginPlay()
 	Super::BeginPlay();
 	
 	ResetAttack();
-
-	CollsionBoxComp->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnCollsionBoxCompBeginOverlap);
-
-	CollsionBoxComp->OnComponentEndOverlap.AddDynamic(this,&ThisClass::OnCollsionBoxCompEndOverlap);
+	
 	//AutoSetLocation();
 }
 
@@ -80,28 +77,28 @@ void ABaseAttacker::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
 	
-	UToolLibrary::DebugLog("Clicked");
-	if (GetWorld())
-	{
-		ATYPlayerController * PC = Cast<ATYPlayerController>(GetWorld()->GetFirstPlayerController());
-		if (PC)
-		{
-			PC->OnClick(this);
-		}
-	}
+	// UToolLibrary::DebugLog("Clicked");
+	// if (GetWorld())
+	// {
+	// 	ATYPlayerController * PC = Cast<ATYPlayerController>(GetWorld()->GetFirstPlayerController());
+	// 	if (PC)
+	// 	{
+	// 		PC->OnClick(this);
+	// 	}
+	// }
 	//Attack();
 }
 
 void ABaseAttacker::NotifyActorOnInputTouchBegin(const ETouchIndex::Type FingerIndex)
 {
 	Super::NotifyActorOnInputTouchBegin(FingerIndex);
-	UE_LOG(LogTemp, Warning, TEXT("TouchBegin"));
+	//UE_LOG(LogTemp, Warning, TEXT("TouchBegin"));
 }
 
 void ABaseAttacker::NotifyActorOnInputTouchEnd(const ETouchIndex::Type FingerIndex)
 {
 	Super::NotifyActorOnInputTouchEnd(FingerIndex);
-	UE_LOG(LogTemp, Warning, TEXT("TouchEnd"));
+	//UE_LOG(LogTemp, Warning, TEXT("TouchEnd"));
 }
 
 void ABaseAttacker::Attack()
@@ -158,13 +155,33 @@ void ABaseAttacker::Change()
 void ABaseAttacker::OnSelected()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_Change);
-	//CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	//绑定覆盖
+	CollsionBoxComp->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnCollsionBoxCompBeginOverlap);
+	CollsionBoxComp->OnComponentEndOverlap.AddDynamic(this,&ThisClass::OnCollsionBoxCompEndOverlap);
+	
+	CollsionBoxComp->GetOverlappingActors(OverlapMapUnit,AMapUnit::StaticClass());
+	for (auto MapUnit : OverlapMapUnit)
+	{
+		Cast<AMapUnit>(MapUnit)->SetOnActor(nullptr);
+		Cast<AMapUnit>(MapUnit)->SetUnitVisble(true);
+	}
+	OverlapMapUnit.Empty();
 }
 
 void ABaseAttacker::UnSelected()
 {
 	ResetAttack();
-	//CollsionBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	CollsionBoxComp->OnComponentBeginOverlap.RemoveDynamic(this,&ThisClass::OnCollsionBoxCompBeginOverlap);
+	CollsionBoxComp->OnComponentEndOverlap.RemoveDynamic(this,&ThisClass::OnCollsionBoxCompEndOverlap);
+	
+	CollsionBoxComp->GetOverlappingActors(OverlapMapUnit,AMapUnit::StaticClass());
+	for (auto MapUnit : OverlapMapUnit)
+	{
+		Cast<AMapUnit>(MapUnit)->SetUnitVisble(false);
+		Cast<AMapUnit>(MapUnit)->SetOnActor(this);
+	}
 }
 
 void ABaseAttacker::OnClicked(UPrimitiveComponent* ClickedComp,FKey Key)
@@ -177,7 +194,7 @@ void ABaseAttacker::OnCollsionBoxCompBeginOverlap(UPrimitiveComponent* Overlappe
 {
 	if (Cast<AMapUnit>(OtherActor))
 	{
-	UToolLibrary::DebugLog("OnCollsionBoxCompBeginOverlap");
+		UToolLibrary::DebugLog("OnCollsionBoxCompBeginOverlap");
 		Cast<AMapUnit>(OtherActor)->SetUnitVisble(true);
 	}
 }
@@ -230,12 +247,11 @@ void ABaseAttacker::AutoSetLocation()
 
 bool ABaseAttacker::CanSetActorLocation()
 {
-	TArray<AActor*> OverlapUnitMaps;
-	GetOverlappingActors(OverlapUnitMaps,AMapUnit::StaticClass());
-
-	for (auto OverlapUnitMap : OverlapUnitMaps)
+	TArray<AActor*>UnitMaps;
+	GetOverlappingActors(UnitMaps);
+	for (auto UnitMap : UnitMaps)
 	{
-		if (Cast<AMapUnit>(OverlapUnitMap)->GetbOverlapActor(this))
+		if (Cast<AMapUnit>(UnitMap)->HaveActor)
 		{
 			return false;
 		}
@@ -245,14 +261,13 @@ bool ABaseAttacker::CanSetActorLocation()
 
 void ABaseAttacker::SetOverlapMapUnitShow()
 {
-	TArray<AActor*> OverlapUnitMaps;
-	GetOverlappingActors(OverlapUnitMaps,AMapUnit::StaticClass());
-
-	for (auto OverlapUnitMap : OverlapUnitMaps)
+	TArray<AActor*>UnitMaps;
+	GetOverlappingActors(UnitMaps);
+	for (auto UnitMap : UnitMaps)
 	{
-		if (Cast<AMapUnit>(OverlapUnitMap)->GetbOverlapActor(this))
+		if (Cast<AMapUnit>(UnitMap)->GetbOverlapActor(this))
 		{
-			Cast<AMapUnit>(OverlapUnitMap)->SetUnitVisble(true);
+			Cast<AMapUnit>(UnitMap)->SetUnitVisble(true);
 		}
 	}
 }

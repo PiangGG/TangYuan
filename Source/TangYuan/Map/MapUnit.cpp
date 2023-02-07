@@ -50,7 +50,7 @@ void AMapUnit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UpdateUnitMateria(DeltaTime);
+	//UpdateUnitMateria(DeltaTime);
 }
 
 void AMapUnit::PostInitializeComponents()

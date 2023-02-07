@@ -25,8 +25,11 @@ public:
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attr|射线基础长度")
 	float LineLength = 10000.0f;
-private:
+	
+	UPROPERTY()
 	AActor* SelectedActor;
+private:
+	
 	
 	AActor* HoverActor;
 
@@ -71,6 +74,8 @@ public:
 	virtual void OnClickStarted();
 	
 	virtual void OnClickCompleted();
+
+	bool bOnCilcking = false;
 private:
 	
 };

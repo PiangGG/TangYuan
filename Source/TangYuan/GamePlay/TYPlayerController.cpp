@@ -144,32 +144,52 @@ void ATYPlayerController::SetActorLocationToUnitMap(AActor* TargetActor)
 {
 	if (TargetActor&&GetWorld())
 	{
-		FHitResult HitResult;
-		FVector StartLocation,Direction,EndLocation;;
-		DeprojectMousePositionToWorld(StartLocation,Direction);
-		EndLocation = StartLocation+(Direction*LineLength);
-
-		const TArray<AActor*> ActorsToIgnore;
-		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery3,true,ActorsToIgnore,EDrawDebugTrace::ForDuration,HitResult,true,FLinearColor::Blue))
+		// FHitResult HitResult;
+		// FVector StartLocation,Direction,EndLocation;;
+		// DeprojectMousePositionToWorld(StartLocation,Direction);
+		// EndLocation = StartLocation+(Direction*LineLength);
+		//
+		// const TArray<AActor*> ActorsToIgnore;
+		// if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery3,true,ActorsToIgnore,EDrawDebugTrace::ForDuration,HitResult,true,FLinearColor::Blue))
+		// {
+		// 	if (HitResult.GetActor()&&Cast<AMapUnit>(HitResult.GetActor()))
+		// 	{
+		// 		if (Cast<ABaseAttacker>(TargetActor)->CanSetActorLocation())
+		// 		{
+		// 			TargetActor->SetActorLocation(Cast<AMapUnit>(HitResult.GetActor())->GetBuildLocation());
+		// 			Cast<ABaseAttacker>(TargetActor)->AtMapUnit = Cast<AMapUnit>(HitResult.GetActor());
+		// 		}
+		// 		else
+		// 		{
+		// 			if (Cast<ABaseAttacker>(TargetActor)->AtMapUnit)
+		// 			{
+		// 				TargetActor->SetActorLocation(Cast<ABaseAttacker>(TargetActor)->AtMapUnit->GetBuildLocation());
+		// 			}
+		// 			else
+		// 			{
+		// 				TargetActor->SetActorLocation(FVector::ZeroVector);
+		// 				UToolLibrary::DebugLog("TargetActor no AtMapUnit last");
+		// 			}
+		// 		}
+		// 	}
+		// }
+		if (SelectedActor&&TargetActor&&Cast<AMapUnit>(TargetActor))
 		{
-			if (HitResult.GetActor()&&Cast<AMapUnit>(HitResult.GetActor()))
+			if (Cast<ABaseAttacker>(SelectedActor)->CanSetActorLocation())
 			{
-				if (Cast<ABaseAttacker>(TargetActor)->CanSetActorLocation())
+				SelectedActor->SetActorLocation(Cast<AMapUnit>(TargetActor)->GetBuildLocation());
+				Cast<ABaseAttacker>(SelectedActor)->AtMapUnit = Cast<AMapUnit>(TargetActor);
+			}
+			else
+			{
+				if (Cast<ABaseAttacker>(SelectedActor)->AtMapUnit)
 				{
-					TargetActor->SetActorLocation(Cast<AMapUnit>(HitResult.GetActor())->GetBuildLocation());
-					Cast<ABaseAttacker>(TargetActor)->AtMapUnit = Cast<AMapUnit>(HitResult.GetActor());
+					SelectedActor->SetActorLocation(Cast<ABaseAttacker>(SelectedActor)->AtMapUnit->GetBuildLocation());
 				}
 				else
 				{
-					if (Cast<ABaseAttacker>(TargetActor)->AtMapUnit)
-					{
-						TargetActor->SetActorLocation(Cast<ABaseAttacker>(TargetActor)->AtMapUnit->GetBuildLocation());
-					}
-					else
-					{
-						TargetActor->SetActorLocation(FVector::ZeroVector);
-						UToolLibrary::DebugLog("TargetActor no AtMapUnit last");
-					}
+					SelectedActor->SetActorLocation(FVector::ZeroVector);
+					UToolLibrary::DebugLog("TargetActor no AtMapUnit last");
 				}
 			}
 		}
@@ -184,13 +204,53 @@ void ATYPlayerController::LineTraceMapUnit()
 void ATYPlayerController::OnClickStarted()
 {
 	UToolLibrary::DebugLog("OnClickStarted");
-	if (true)
+
+	bOnCilcking = true;
+	
+	if (ControllerState ==EControllerState::EBuild)
 	{
-		
+		FHitResult HitResult;
+		FVector StartLocation,Direction,EndLocation;;
+		DeprojectMousePositionToWorld(StartLocation,Direction);
+		EndLocation = StartLocation+(Direction*LineLength);
+
+		const TArray<AActor*> ActorsToIgnore;
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery6,true,ActorsToIgnore,EDrawDebugTrace::ForDuration,HitResult,true,FLinearColor::Red))
+		{
+			if (HitResult.GetActor()&&Cast<ABaseAttacker>(HitResult.GetActor()))
+			{
+				if (!SelectedActor)
+				{
+					SelectedActor = HitResult.GetActor();
+					Cast<ABaseAttacker>(HitResult.GetActor())->OnSelected();
+					UToolLibrary::DebugLog("SetNewSelectedActor");
+				}
+			}
+		}
 	}
 }
 
 void ATYPlayerController::OnClickCompleted()
 {
 	UToolLibrary::DebugLog("OnClickCompleted");
+
+	if (ControllerState ==EControllerState::EBuild)
+	{
+		FHitResult HitResult;
+		FVector StartLocation,Direction,EndLocation;;
+		DeprojectMousePositionToWorld(StartLocation,Direction);
+		EndLocation = StartLocation+(Direction*LineLength);
+
+		const TArray<AActor*> ActorsToIgnore;
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery3,true,ActorsToIgnore,EDrawDebugTrace::ForDuration,HitResult,true,FLinearColor::Green))
+		{
+			if (HitResult.GetActor()&&Cast<AMapUnit>(HitResult.GetActor())&&SelectedActor)
+			{
+				SetActorLocationToUnitMap(HitResult.GetActor());
+				Cast<ABaseAttacker>(SelectedActor)->UnSelected();
+				SelectedActor = nullptr;
+			}
+		}
+	}
+	bOnCilcking = false;
 }

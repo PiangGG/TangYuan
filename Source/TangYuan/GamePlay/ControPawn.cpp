@@ -80,6 +80,10 @@ void AControPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 			EnhancedInputComponent->BindAction(IA_OnClick, ETriggerEvent::Completed, this, &AControPawn::OnClickCompleted);
 
 		}
+		if (IA_Move)
+		{
+			EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AControPawn::Move);
+		}
 	}
 }
 
@@ -105,6 +109,24 @@ void AControPawn::MoveRight(const FInputActionValue& InputActionValue)
 	}
 }
 
+void AControPawn::Move(const FInputActionValue& InputActionValue)
+{
+	if (GetController()&&Cast<ATYPlayerController>(GetController())&&!Cast<ATYPlayerController>(GetController())->SelectedActor)
+	{
+		FInputActionValue::Axis2D InputVector2D= InputActionValue.Get<FInputActionValue::Axis2D>();
+
+		const FRotator Ratation = GetControlRotation();
+		const FRotator YawRation = FRotator(0.0f,Ratation.Yaw,0.0f);
+		
+		const FVector VDirctionX = FRotationMatrix(YawRation).GetUnitAxis(EAxis::X)*InputVector2D.Y;
+		const FVector VDirctionY = FRotationMatrix(YawRation).GetUnitAxis(EAxis::Y)*InputVector2D.X;
+		const FVector Dirction = (VDirctionX+VDirctionY)*MoveSize;
+		//const FVector Dirction = FVector(InputVector2D.X,InputVector2D.Y,0.0F);
+		//AddMovementInput(Dirction,1.0f);
+		AddActorWorldOffset(Dirction);
+	}
+}
+
 void AControPawn::PushCamera(const FInputActionValue& InputActionValue)
 {
 	if (GetController()&&InputActionValue.GetMagnitude()!=0.0f)
@@ -113,6 +135,8 @@ void AControPawn::PushCamera(const FInputActionValue& InputActionValue)
 		{
 			CameraOffsize_Current +=(InputActionValue.GetMagnitude()*CameraOffsize_Rate);
 			SpringArmComponent->TargetArmLength = CameraOffsize_Current;
+
+			//MoveSize = CameraOffsize_Current/CameraOffsize_Max*;
 		}
 	}
 }
