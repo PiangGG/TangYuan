@@ -53,8 +53,9 @@ public:
 	void Move(const FInputActionValue& InputActionValue);
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Base|MoveSize")
-	float MoveSize = 6.0f;
-	
+	float BaseMoveSize = 3.0f;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Base|MoveSize")
+	float CurrentMoveSize = 3.0f;
 	//推拉摄像机
 	void PushCamera(const FInputActionValue& InputActionValue);
 

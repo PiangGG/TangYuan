@@ -120,7 +120,7 @@ void AControPawn::Move(const FInputActionValue& InputActionValue)
 		
 		const FVector VDirctionX = FRotationMatrix(YawRation).GetUnitAxis(EAxis::X)*InputVector2D.Y;
 		const FVector VDirctionY = FRotationMatrix(YawRation).GetUnitAxis(EAxis::Y)*InputVector2D.X;
-		const FVector Dirction = (VDirctionX+VDirctionY)*MoveSize;
+		const FVector Dirction = (VDirctionX+VDirctionY)*CurrentMoveSize;
 		//const FVector Dirction = FVector(InputVector2D.X,InputVector2D.Y,0.0F);
 		//AddMovementInput(Dirction,1.0f);
 		AddActorWorldOffset(Dirction);
@@ -136,7 +136,7 @@ void AControPawn::PushCamera(const FInputActionValue& InputActionValue)
 			CameraOffsize_Current +=(InputActionValue.GetMagnitude()*CameraOffsize_Rate);
 			SpringArmComponent->TargetArmLength = CameraOffsize_Current;
 
-			//MoveSize = CameraOffsize_Current/CameraOffsize_Max*;
+			CurrentMoveSize = ((CameraOffsize_Max*2-CameraOffsize_Current)/CameraOffsize_Max)*BaseMoveSize;
 		}
 	}
 }

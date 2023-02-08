@@ -228,6 +228,23 @@ void ATYPlayerController::OnClickStarted()
 			}
 		}
 	}
+	if (ControllerState ==EControllerState::ECombat)
+	{
+		FHitResult HitResult;
+		FVector StartLocation,Direction,EndLocation;;
+		DeprojectMousePositionToWorld(StartLocation,Direction);
+		EndLocation = StartLocation+(Direction*LineLength);
+
+		const TArray<AActor*> ActorsToIgnore;
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(),StartLocation,EndLocation,ETraceTypeQuery::TraceTypeQuery6,true,ActorsToIgnore,EDrawDebugTrace::ForDuration,HitResult,true,FLinearColor::Red))
+		{
+			if (HitResult.GetActor()&&Cast<ABaseAttacker>(HitResult.GetActor()))
+			{
+				Cast<ABaseAttacker>(HitResult.GetActor())->Attack();
+				UToolLibrary::DebugLog("OnClick");
+			}
+		}
+	}
 }
 
 void ATYPlayerController::OnClickCompleted()

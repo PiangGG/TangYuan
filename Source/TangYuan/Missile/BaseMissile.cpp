@@ -19,9 +19,13 @@ ABaseMissile::ABaseMissile()
 
 	ST_MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ST_MeshComp"));
 	ST_MeshComp->SetupAttachment(SceneRoot);
-
+	ST_MeshComp->bCastDynamicShadow = false;
+	ST_MeshComp->bCastStaticShadow = false;
+	
 	SK_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SK_MeshComp"));
 	SK_MeshComp->SetupAttachment(SceneRoot);
+	SK_MeshComp->bCastDynamicShadow = false;
+	SK_MeshComp->bCastStaticShadow = false;
 	
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
 	MovementComponent->InitialSpeed = 512.0f;
