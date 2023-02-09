@@ -29,16 +29,14 @@ ABaseAttacker::ABaseAttacker()
 	ST_MeshComp->SetCollisionProfileName(FName("AttackerMesh"));
 	ST_MeshComp->bCastDynamicShadow = false;
 	ST_MeshComp->bCastStaticShadow = false;
-	//ST_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
-
+	
 	SK_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SK_MeshComp"));
 	SK_MeshComp->SetupAttachment(MeshRootComponent);
 	SK_MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SK_MeshComp->SetCollisionProfileName(FName("AttackerMesh"));
 	SK_MeshComp->bCastDynamicShadow = false;
 	SK_MeshComp->bCastStaticShadow = false;
-	//SK_MeshComp->OnClicked.AddDynamic(this,&ABaseAttacker::OnClicked);
-
+	
 	AttackLocationComp = CreateDefaultSubobject<USceneComponent>(TEXT("AttackLocationComp"));
 	AttackLocationComp->SetupAttachment(MeshRootComponent);
 	
@@ -47,6 +45,8 @@ ABaseAttacker::ABaseAttacker()
 
 	ArrowComponent =  CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComp"));
 	ArrowComponent->SetupAttachment(MeshRootComponent);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +57,16 @@ void ABaseAttacker::BeginPlay()
 	ResetAttack();
 	
 	//AutoSetLocation();
+}
+
+void ABaseAttacker::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	CollsionBoxComp->GetOverlappingActors(OverlapMapUnit,AMapUnit::StaticClass());
+	for (auto MapUnit : OverlapMapUnit)
+	{
+		Cast<AMapUnit>(MapUnit)->SetOnActor(nullptr);
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 // Called every frame
@@ -71,6 +81,22 @@ void ABaseAttacker::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ABaseAttacker::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
+float ABaseAttacker::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void ABaseAttacker::ApplyDamge(AActor* FromActor, float Damge)
+{
+	
 }
 
 void ABaseAttacker::NotifyActorOnClicked(FKey ButtonPressed)

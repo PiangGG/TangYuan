@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Pawn.h"
+#include "TangYuan/Component/HealthComponent.h"
 #include "BaseAttacker.generated.h"
 
 UCLASS()
@@ -22,6 +23,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,7 +31,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void PostInitializeComponents() override;
 
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	virtual void ApplyDamge(AActor* FromActor,float Damge);
 protected:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
 	
@@ -118,13 +124,12 @@ public:
 	UBoxComponent* CollsionBoxComp;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	UWidgetComponent* WidgetComp_Cooling;
-
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	USceneComponent* AttackLocationComp;
-	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	UArrowComponent* ArrowComponent;
-
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
+	UHealthComponent* HealthComponent;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Component")
 	TSubclassOf<class ABaseMissile> Missile;
 
