@@ -26,6 +26,26 @@ public class Interactive : ModuleRules
 			new string[]
 			{
 				"Core",
+				"CoreOnline",
+				"CoreUObject",
+				"ApplicationCore",
+				"Engine",
+				"PhysicsCore",
+				"GameplayTags",
+				"GameplayTasks",
+				"GameplayAbilities",
+				"AIModule",
+				"ModularGameplay",
+				"ModularGameplayActors",
+				"DataRegistry",
+				"ReplicationGraph",
+				"GameFeatures",
+				"SignificanceManager",
+				"Hotfix",
+				"CommonLoadingScreen",
+				"Niagara",
+				//"AsyncMixin",
+				"ControlFlows"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -34,10 +54,30 @@ public class Interactive : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"CoreUObject",
-				"Engine",
+				"InputCore",
 				"Slate",
 				"SlateCore",
+				"RenderCore",
+				"DeveloperSettings",
+				"EnhancedInput",
+				"NetCore",
+				"RHI",
+				"Projects",
+				"Gauntlet",
+				"UMG",
+				"CommonUI",
+				"CommonInput",
+				"GameSettings",
+				"CommonGame",
+				"CommonUser",
+				"GameSubtitles",
+				"GameplayMessageRuntime",
+				"AudioMixer",
+				"NetworkReplayStreaming",
+				"UIExtension",
+				"ClientPilot",
+				"AudioModulation",
+				"EngineSettings",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
