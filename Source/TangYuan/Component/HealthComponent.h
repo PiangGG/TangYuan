@@ -6,7 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChange,AActor*,FromActor,float,LossHealth)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChange,AActor*,FromActor,float,LossHealth);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class TANGYUAN_API UHealthComponent : public UActorComponent
 {

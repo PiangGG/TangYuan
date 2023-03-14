@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.1",
+	"EngineAssociation": "{1CE6CDD2-4955-4087-529F-E0957953948E}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -10,7 +10,8 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"ModularGameplayActors",
-				"Engine"
+				"Engine",
+				"CoreUObject"
 			]
 		}
 	],
