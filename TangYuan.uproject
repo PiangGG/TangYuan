@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{1CE6CDD2-4955-4087-529F-E0957953948E}",
+	"EngineAssociation": "5.1",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -11,8 +11,7 @@
 			"AdditionalDependencies": [
 				"ModularGameplayActors",
 				"Engine",
-				"CoreUObject",
-				"Interactive"
+				"CoreUObject"
 			]
 		}
 	],
@@ -38,6 +37,10 @@
 		},
 		{
 			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "GameFeatures",
 			"Enabled": true
 		}
 	]
